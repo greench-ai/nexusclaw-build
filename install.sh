@@ -16,7 +16,7 @@ NC='\033[0m'
 # ─── Config ─────────────────────────────────────────────────────────────────────
 APP_NAME="NexusClaw"
 BIN_NAME="nexusclaw"
-REPO="greench-ai/nexusclaw"
+REPO="greench-ai/nexusclaw-build"
 CONFIG_DIR="$HOME/.nexusclaw"
 WORKSPACE_DIR="$CONFIG_DIR/workspace"
 SKILLS_DIR="$WORKSPACE_DIR/skills"
