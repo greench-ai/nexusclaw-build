@@ -1,129 +1,59 @@
 ---
 name: weather
-description: "Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed."
-homepage: https://wttr.in/:help
+description: Get current weather and forecasts for any location. No API key required.
+version: 1.0.0
 metadata:
-  {
-    "openclaw":
-      {
-        "emoji": "☔",
-        "requires": { "bins": ["curl"] },
-        "install":
-          [
-            {
-              "id": "brew",
-              "kind": "brew",
-              "formula": "curl",
-              "bins": ["curl"],
-              "label": "Install curl (brew)",
-            },
-          ],
-      },
-  }
+  openclaw:
+    requires:
+      bins:
+        - curl
 ---
 
-# Weather Skill
+# Weather
 
-Get current weather conditions and forecasts.
+Get current weather and forecasts for any city or location.
+Uses wttr.in and Open-Meteo — both free, no API key needed.
 
-## When to Use
+## Usage
 
-✅ **USE this skill when:**
-
-- "What's the weather?"
-- "Will it rain today/tomorrow?"
-- "Temperature in [city]"
-- "Weather forecast for the week"
-- Travel planning weather checks
-
-## When NOT to Use
-
-❌ **DON'T use this skill when:**
-
-- Historical weather data → use weather archives/APIs
-- Climate analysis or trends → use specialized data sources
-- Hyper-local microclimate data → use local sensors
-- Severe weather alerts → check official NWS sources
-- Aviation/marine weather → use specialized services (METAR, etc.)
-
-## Location
-
-Always include a city, region, or airport code in weather queries.
-
-## Commands
-
-### Current Weather
-
-```bash
-# One-line summary
-curl "wttr.in/London?format=3"
-
-# Detailed current conditions
-curl "wttr.in/London?0"
-
-# Specific city
-curl "wttr.in/New+York?format=3"
+```
+What's the weather in Amsterdam?
+Weather forecast for London this week
+Current temperature in Tokyo
 ```
 
-### Forecasts
+## How to get weather
 
-```bash
-# 3-day forecast
-curl "wttr.in/London"
+**Current conditions:**
+Run: `curl -s "wttr.in/{CITY}?format=j1"`
+Parse the JSON for temp_C, weatherDesc, humidity, windspeedKmph.
 
-# Week forecast
-curl "wttr.in/London?format=v2"
+**7-day forecast:**
+Get coordinates first: `curl -s "https://geocoding-api.open-meteo.com/v1/search?name={CITY}&count=1"`
+Then: `curl -s "https://api.open-meteo.com/v1/forecast?latitude={LAT}&longitude={LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&forecast_days=7&timezone=auto"`
 
-# Specific day (0=today, 1=tomorrow, 2=day after)
-curl "wttr.in/London?1"
+**One-liner summary:**
+`curl -s "wttr.in/{CITY}?format=3"` returns: `{city}: ⛅️ +18°C`
+
+## Weather codes (Open-Meteo)
+- 0: Clear sky
+- 1-3: Partly cloudy
+- 45,48: Fog
+- 51-67: Rain/drizzle
+- 71-77: Snow
+- 80-82: Rain showers
+- 95: Thunderstorm
+
+## Output format
+
+Always present weather as:
+```
+📍 {City}
+🌡️ Temperature: {temp}°C (feels like {feels_like}°C)
+🌤️ Conditions: {description}
+💧 Humidity: {humidity}%
+💨 Wind: {wind} km/h
+🌅 Sunrise: {sunrise} | 🌇 Sunset: {sunset}
 ```
 
-### Format Options
-
-```bash
-# One-liner
-curl "wttr.in/London?format=%l:+%c+%t+%w"
-
-# JSON output
-curl "wttr.in/London?format=j1"
-
-# PNG image
-curl "wttr.in/London.png"
-```
-
-### Format Codes
-
-- `%c` — Weather condition emoji
-- `%t` — Temperature
-- `%f` — "Feels like"
-- `%w` — Wind
-- `%h` — Humidity
-- `%p` — Precipitation
-- `%l` — Location
-
-## Quick Responses
-
-**"What's the weather?"**
-
-```bash
-curl -s "wttr.in/London?format=%l:+%c+%t+(feels+like+%f),+%w+wind,+%h+humidity"
-```
-
-**"Will it rain?"**
-
-```bash
-curl -s "wttr.in/London?format=%l:+%c+%p"
-```
-
-**"Weekend forecast"**
-
-```bash
-curl "wttr.in/London?format=v2"
-```
-
-## Notes
-
-- No API key needed (uses wttr.in)
-- Rate limited; don't spam requests
-- Works for most global cities
-- Supports airport codes: `curl wttr.in/ORD`
+For forecasts, show a table with emoji per day.
