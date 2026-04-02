@@ -93,7 +93,7 @@ install_native() {
   # Clone if not already in the repo
   if [ ! -f "package.json" ]; then
     log "Cloning $APP_NAME..."
-    git clone --depth=1 "https://github.com/$REPO.git" nexusclaw-src
+    git clone --depth=1 "https://github.com/$REPO.git" nexusclaw-src-src
     cd nexusclaw-src
   fi
 
