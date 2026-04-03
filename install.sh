@@ -109,6 +109,13 @@ install_native() {
   log "Installing globally..."
   npm install -g .
 
+  # Ensure npm global bin is in PATH
+  NPM_BIN=$(npm bin -g 2>/dev/null || echo "$HOME/.npm-global/bin")
+  if ! echo "$PATH" | grep -q "$NPM_BIN"; then
+    echo "export PATH=\"$NPM_BIN:\$PATH\"" >> "$HOME/.bashrc"
+    export PATH="$NPM_BIN:$PATH"
+  fi
+
   ok "$APP_NAME installed → $(which $BIN_NAME)"
 }
 
