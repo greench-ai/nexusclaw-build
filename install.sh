@@ -107,7 +107,7 @@ install_native() {
   pnpm build
 
   log "Installing globally..."
-  npm install -g . --force
+  npm install -g . --force --force
 
   # Ensure npm global bin is in PATH
   NPM_BIN=$(npm bin -g 2>/dev/null || echo "$HOME/.npm-global/bin")
